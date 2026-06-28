@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무브먼트랩 인스타그램 콘텐츠 대시보드</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--ink:#141414;--ink2:#3a3a3a;--soft-ink:#5c5c5c;--collab:#BBB6AC;--muted:#969089;
+--line:#E7E4DD;--bg:#EFEDE7;--card:#FFFFFF;--soft:#F6F5F0;--hi:#111;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5;}
+.wrap{max-width:1140px;margin:0 auto;padding:0 22px 70px;}
+/* HERO */
+.hero{background:#101010;color:#fff;padding:54px 40px 40px;margin-bottom:26px;position:relative;overflow:hidden;}
+.hero::after{content:"";position:absolute;right:-80px;top:-80px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%);}
+.hero .inner{max-width:1140px;margin:0 auto;padding:0 22px;position:relative;}
+.hero .eyebrow{font-size:11px;letter-spacing:3.5px;text-transform:uppercase;color:#8d8d8d;font-weight:700;}
+.hero h1{font-size:42px;font-weight:800;letter-spacing:-1.5px;margin-top:10px;line-height:1.02;}
+.hero .sub{color:#9b968d;font-size:13px;margin-top:12px;}
+.hero .strip{display:flex;gap:0;margin-top:34px;flex-wrap:wrap;border-top:1px solid #2a2a2a;}
+.hero .strip div{flex:1;min-width:130px;padding:18px 22px 4px 0;}
+.hero .strip .k{font-size:11px;color:#8d8d8d;letter-spacing:.4px;}
+.hero .strip b{display:block;font-size:30px;font-weight:800;color:#fff;letter-spacing:-1px;margin-top:6px;font-variant-numeric:tabular-nums;}
+/* controls */
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(20,20,20,.04);}
+.controls .lab{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.4px;}
+.seg{display:flex;gap:3px;background:var(--soft);border-radius:10px;padding:3px;}
+.seg button{border:none;background:none;padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit;transition:.14s;}
+.seg button.on{background:var(--ink);color:#fff;}
+.ck{margin-left:auto;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px;cursor:pointer;color:var(--ink2);}
+.ck input{accent-color:var(--ink);width:15px;height:15px;}
+.tabs{display:flex;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:26px;box-shadow:0 4px 14px rgba(20,20,20,.04);flex-wrap:wrap;}
+.tab{flex:1;min-width:96px;text-align:center;padding:11px 14px;border-radius:10px;font-size:13.5px;font-weight:700;color:var(--muted);cursor:pointer;border:none;background:none;transition:.14s;}
+.tab:hover{color:var(--ink);background:var(--soft);}
+.tab.on{background:var(--ink);color:#fff;}
+/* kpi */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:26px;}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 4px 14px rgba(20,20,20,.04);transition:transform .15s, box-shadow .15s;}
+.kpi:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(20,20,20,.08);}
+.kpi.feat{background:var(--ink);color:#fff;}
+.kpi .lbl{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.3px;text-transform:uppercase;}
+.kpi.feat .lbl{color:#9a9a9a;}
+.kpi .val{font-size:30px;font-weight:800;margin-top:10px;letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums;}
+.kpi .note{font-size:11px;color:var(--muted);margin-top:8px;}
+.kpi.feat .note{color:#9a9a9a;}
+/* spotlight */
+.spot{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px;}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 4px 14px rgba(20,20,20,.04);position:relative;}
+.scard .tagline{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);}
+.scard .big{font-size:28px;font-weight:800;letter-spacing:-.8px;margin-top:10px;line-height:1;}
+.scard .nm{font-size:13px;color:var(--ink2);margin-top:10px;font-weight:600;line-height:1.4;}
+.scard .meta{font-size:11px;color:var(--muted);margin-top:3px;}
+/* section */
+.slabel{display:flex;align-items:baseline;gap:12px;margin:4px 0 16px;}
+.slabel .num{font-size:13px;font-weight:800;color:var(--ink);background:var(--ink);color:#fff;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;align-self:center;}
+.slabel h2{font-size:18px;font-weight:800;letter-spacing:-.4px;}
+.slabel .d{flex:1;height:1px;background:var(--line);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 4px 14px rgba(20,20,20,.04);}
+.card.full{grid-column:1/-1;}
+.card h3{font-size:14.5px;font-weight:700;}
+.card .hn{font-size:11.5px;color:var(--muted);margin-top:3px;margin-bottom:18px;}
+.cv{position:relative;height:256px;}
+.cv.tall{height:430px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th,td{padding:11px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;}
+th{color:var(--muted);font-weight:700;font-size:10.5px;letter-spacing:.3px;text-transform:uppercase;background:var(--soft);}
+th:first-child{border-radius:8px 0 0 8px;}th:last-child{border-radius:0 8px 8px 0;}
+td.l,th.l{text-align:left;}tr:hover td{background:var(--soft);}
+.dim{color:#bdb8ad;font-size:11px;}
+.tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;color:#fff;font-weight:700;}
+.t-ad{background:var(--ink2);}.t-collab{background:var(--collab);color:#3a3a3a;}
+.block{margin-bottom:30px;}
+.item{border-radius:14px;padding:16px 18px;margin-bottom:10px;font-size:13.5px;line-height:1.62;border:1px solid var(--line);background:var(--card);transition:transform .14s;}
+.item:hover{transform:translateX(3px);}
+.well{border-left:3px solid var(--soft-ink);} .well b{color:var(--ink);}
+.ins{border-left:3px solid var(--ink);} .ins b{color:var(--ink);}
+.act{background:#141414;color:#eee;border:1px solid #141414;}
+.act b{color:#fff;}
+.chip{display:inline-block;background:#262626;border:1px solid #333;color:#cfcfcf;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:10px;}
+.foot{color:var(--muted);font-size:11px;margin-top:30px;border-top:1px solid var(--line);padding-top:16px;line-height:1.6;}
+.pane{display:none;}.pane.on{display:block;}
+@media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr);}.grid,.spot{grid-template-columns:1fr;}.hero h1{font-size:32px;}}
+</style></head><body>
+
+<div class="hero"><div class="inner">
+<div class="eyebrow">Movement Lab · Instagram</div>
+<h1>콘텐츠 성과<br>대시보드</h1>
+<div class="sub" id="hsub">@movementlab_project · 게시물 24건 · 2026.02.04 – 06.22 · 스냅샷</div>
+<div class="strip">
+<div><span class="k">총 도달</span><b id="hReach">–</b></div>
+<div><span class="k">총 외부 링크 클릭</span><b id="hLink">–</b></div>
+<div><span class="k">총 저장</span><b id="hSave">–</b></div>
+<div><span class="k">평균 저장률</span><b id="hSr">–</b></div>
+</div>
+</div></div>
+
+<div class="wrap">
+<div class="controls">
+<span class="lab">기간</span>
+<div class="seg" id="segPeriod"><button data-v="all" class="on">전체</button><button data-v="r3">최근 3개월</button></div>
+<label class="ck"><input type="checkbox" id="ckOut"> 블루보틀 이상치 제외</label>
+</div>
+<div class="tabs">
+<button class="tab on" data-p="ov">개요</button>
+<button class="tab" data-p="mo">월별 분석</button>
+<button class="tab" data-p="pf">게시물별</button>
+<button class="tab" data-p="rv">리뷰 &amp; 액션</button>
+</div>
+
+<div class="pane on" id="ov">
+<div class="kpis" id="kpis"></div>
+<div class="spot" id="spot"></div>
+<div class="grid">
+<div class="card"><h3>월별 평균 도달</h3><div class="hn">게시물당 평균</div><div class="cv"><canvas id="ovReach"></canvas></div></div>
+<div class="card"><h3>월별 평균 저장률</h3><div class="hn">콘텐츠 질 · 저장 ÷ 도달</div><div class="cv"><canvas id="ovSave"></canvas></div></div>
+</div></div>
+
+<div class="pane" id="mo">
+<div class="grid">
+<div class="card"><h3>월별 평균 도달</h3><div class="hn">게시물당</div><div class="cv"><canvas id="moReach"></canvas></div></div>
+<div class="card"><h3>월별 총 외부 링크 클릭</h3><div class="hn">트래픽·문의 유도</div><div class="cv"><canvas id="moLink"></canvas></div></div>
+<div class="card"><h3>월별 평균 저장률</h3><div class="hn">하락 추세 주의</div><div class="cv"><canvas id="moSave"></canvas></div></div>
+<div class="card"><h3>월별 신규 팔로우</h3><div class="hn">계정 성장 기여</div><div class="cv"><canvas id="moFol"></canvas></div></div>
+</div>
+<div class="card full"><h3>월별 요약</h3><div class="hn" id="moNote"> </div>
+<table><thead><tr><th class="l">월</th><th>게시물</th><th>평균 도달</th><th>총 저장</th><th>평균 저장률</th><th>총 링크</th><th>총 팔로우</th><th>평균 좋아요</th></tr></thead><tbody id="moTb"></tbody></table></div>
+</div>
+
+<div class="pane" id="pf">
+<div class="card full"><h3>게시물별 도달 순위</h3><div class="hn">진한 회색 = 광고 · 연회색 = 콜라보</div><div class="cv tall"><canvas id="pfReach"></canvas></div></div>
+<div class="card full" style="margin-top:16px"><h3>게시물 상세 (최신순)</h3><div class="hn"> </div>
+<table><thead><tr><th class="l">게시물</th><th class="l">노출</th><th>도달</th><th>저장</th><th>저장률</th><th>링크</th><th>팔로우</th><th>좋아요</th></tr></thead><tbody id="pfTb"></tbody></table></div>
+</div>
+
+<div class="pane" id="rv">
+<div class="block">
+<div class="slabel"><span class="num">01</span><h2>잘한 점</h2><span class="d"></span></div>
+<div class="item well"><b>THE MAKERS 인터뷰·콜라보가 저장과 좋아요를 견인했어요.</b> WGNB 백종환(좋아요 491·저장 178), 비트윈스페이스(240). 사람과 만드는 과정 이야기에 가장 깊게 반응했습니다.</div>
+<div class="item well"><b>블루보틀 대형 협업이 폭발했어요.</b> 도달 13.6만·저장 940·링크 6,567. ‘대형 브랜드 협업 + 부스팅 + 링크 유도’가 맞물리면 큰 성과가 난다는 걸 증명했습니다.</div>
+<div class="item well"><b>링크 클릭이 실제로 일어나고 있어요.</b> 4개월 누적 9천 회 이상(서초 1,160·게임듀오 509·미리내집 360). 문의로 이어질 트래픽이 꾸준히 발생 중입니다.</div>
+<div class="item well"><b>콜라보·광고로 도달을 안정적으로 확보했어요.</b> 게시물당 평균 2~3만 도달을 유지하며 신규 노출 기반을 넓혔습니다.</div>
+</div>
+<div class="block">
+<div class="slabel"><span class="num">02</span><h2>인사이트</h2><span class="d"></span></div>
+<div class="item ins"><b>저장률이 하락 추세예요.</b> 월 평균 2월 0.45% → 6월 0.13%. 도달은 광고로 유지되지만, 콘텐츠를 ‘소장하고 싶어’ 저장하는 비율은 줄고 있다는 신호입니다.</div>
+<div class="item ins"><b>콜라보가 트래픽 기회를 놓치고 있어요.</b> 콜라보 글은 도달·저장은 좋은데 외부 링크 CTA가 거의 없어 링크 클릭이 0에 가깝습니다. 가장 큰 개선 여지.</div>
+<div class="item ins"><b>좋아요만 보면 성과를 오판해요.</b> 좋아요(23~157)와 실제 도달·저장·링크는 따로 움직입니다. 판단 기준은 도달·저장률·링크 클릭이어야 합니다.</div>
+<div class="item ins"><b>도달의 90% 이상이 비팔로워예요.</b> 신규에게는 잘 닿지만 팔로우 전환은 약합니다 — 인지는 되나 관계로는 덜 이어지는 단계.</div>
+<div class="item ins"><b>2월 평균은 이상치(블루보틀)로 부풀려져 있어요.</b> 상단 토글로 제외하면 실제 베이스라인(평균 도달 약 1.4만)이 보입니다.</div>
+</div>
+<div class="block">
+<div class="slabel"><span class="num">03</span><h2>액션</h2><span class="d"></span></div>
+<div class="item act"><b>1. 콜라보 게시물 캡션에 프로필 링크 유도(CTA)를 기본 포함한다.</b><br>저장·도달은 높은데 링크 클릭이 0에 가까운 콜라보 글에 “프로젝트 문의 ▶ 프로필 링크”를 고정 삽입한다. <span class="chip">담당 콘텐츠 · 이번 주 발행분부터</span></div>
+<div class="item act"><b>2. 'THE MAKERS' 인터뷰 콘텐츠를 월 1회 정기 발행한다.</b><br>저장·좋아요 최고 성과인 인터뷰형을 고정 코너로 편성해 팬과 저장을 누적한다. <span class="chip">담당 기획 · 월 1회</span></div>
+<div class="item act"><b>3. 모든 게시물에 '저장 유발' 정보 슬라이드 1컷을 추가한다.</b><br>도면·치수·소재·가격대·구성 팁 등 레퍼런스 정보를 1장 포함해 하락 중인 저장률을 반등시킨다. <span class="chip">담당 디자인 · 다음 발행분부터</span></div>
+<div class="item act"><b>4. 대형 브랜드 협업은 '콜라보 + 부스팅 + 링크 CTA' 3요소를 함께 집행한다.</b><br>블루보틀 성공 공식을 ‘운’이 아닌 ‘설계’로 재현한다. <span class="chip">담당 마케팅 · 차기 대형 협업</span></div>
+</div>
+</div>
+
+<div class="foot" id="foot"></div>
+</div>
+
+<script>
+const INK="#1d1d1d",COLL="#C2BDB2";
+const RAW=[
+["2026-02-04","광고","스토리",31,0,5,0,7,5280,3555,0,6,null,false],
+["2026-02-06","광고","프로젝트",951,5,166,5,940,294336,136058,463,191,6567,true],
+["2026-02-11","콜라보","프로젝트",99,0,12,2,29,36465,15936,52,2,null,false],
+["2026-02-16","콜라보","프로젝트",140,0,12,0,95,34126,16717,54,6,1,false],
+["2026-02-23","광고","프로젝트",246,1,31,0,130,42383,20925,90,19,28,false],
+["2026-03-02","콜라보","프로젝트",178,3,21,4,90,26898,12667,57,8,4,false],
+["2026-03-16","콜라보","프로젝트",167,0,15,2,92,28024,12641,49,14,1,false],
+["2026-03-23","광고","프로젝트",91,0,12,0,52,37358,16944,35,10,257,false],
+["2026-03-30","광고","프로젝트",151,0,24,0,134,42578,20625,87,18,37,false],
+["2026-04-03","콜라보","프로젝트",44,0,6,0,20,25472,12986,14,0,null,false],
+["2026-04-06","광고","프로젝트",116,0,12,0,43,43813,22328,38,5,21,false],
+["2026-04-13","광고","프로젝트",158,0,42,0,135,41829,20332,68,13,161,false],
+["2026-04-20","콜라보","스토리",240,2,18,0,38,33749,13677,null,null,null,false],
+["2026-04-28","콜라보","프로젝트",39,0,0,2,11,15912,6755,17,2,1,false],
+["2026-05-04","콜라보","프로젝트",60,0,15,1,45,34178,16247,35,5,2,false],
+["2026-05-11","광고","프로젝트",178,0,34,0,96,67479,32448,65,11,194,false],
+["2026-05-13","콜라보","스토리",491,0,24,2,178,39920,18163,null,null,null,false],
+["2026-05-18","광고","렌탈",77,0,8,4,76,62877,31169,33,11,1160,false],
+["2026-05-21","광고","프로젝트",76,2,19,0,67,52113,28516,18,7,335,false],
+["2026-05-25","콜라보","프로젝트",157,0,35,31,70,66775,26663,170,8,null,false],
+["2026-06-01","광고","프로젝트",87,1,8,4,52,85045,52353,48,6,509,false],
+["2026-06-08","광고","렌탈",105,0,23,4,60,58489,34174,15,8,360,false],
+["2026-06-15","콜라보","프로젝트",23,1,8,0,9,19643,8436,14,2,null,false],
+["2026-06-22","콜라보","프로젝트",67,0,12,1,20,33175,14324,28,3,5,false],
+];
+const T={"2026-02-04":"브랜드필름(릴스)","2026-02-06":"블루보틀 의자 제작기","2026-02-11":"VOCO 명동","2026-02-16":"한옥에세이 가회","2026-02-23":"WGNB SHLTR 속초","2026-03-02":"틸트E iF 어워드","2026-03-16":"b.Grid iF 어워드","2026-03-23":"들꽃숲 카페","2026-03-30":"본지르르 서촌","2026-04-03":"ART OnO 2026","2026-04-06":"LG 스마트코티지","2026-04-13":"너와의원","2026-04-20":"비트윈 THE MAKERS","2026-04-28":"SpaceCup 제주","2026-05-04":"올리브영 강남","2026-05-11":"성수율뮤직","2026-05-13":"WGNB 백종환 인터뷰","2026-05-18":"서초 e편한세상(렌탈)","2026-05-21":"머세데스 스튜디오","2026-05-25":"마말리안×국립현대","2026-06-01":"게임듀오 오피스","2026-06-08":"미리내집","2026-06-15":"KB증권","2026-06-22":"남서울 미술관(SOFA)"};
+let posts=RAW.map(r=>({d:r[0],mo:r[0].slice(0,7),e:r[1],t:r[2],like:r[3],cm:r[4],sh:r[5],rp:r[6],save:r[7],views:r[8],reach:r[9],pv:r[10],fo:r[11],link:r[12],out:r[13],n:T[r[0]]}));
+let period="all",excl=false;
+Chart.defaults.font.family="Pretendard";Chart.defaults.font.size=11;Chart.defaults.color="#969089";
+// value label plugin
+Chart.register({id:"vlab",afterDatasetsDraw(c){if(!c.$vlab)return;const ctx=c.ctx,f=c.$vfmt||(v=>v.toLocaleString()),h=c.options.indexAxis==="y";ctx.save();ctx.font="700 11px Pretendard";ctx.fillStyle="#141414";c.getDatasetMeta(0).data.forEach((el,i)=>{const v=c.data.datasets[0].data[i];if(v==null||v===0&&h)return;if(h){ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillText(f(v),el.x+8,el.y);}else{ctx.textAlign="center";ctx.textBaseline="bottom";ctx.fillText(f(v),el.x,el.y-5);}});ctx.restore();}});
+const charts={},gx={grid:{display:false}},gy={grid:{color:"#eceae3"},border:{display:false}};
+const fil=()=>{let p=posts.slice();if(period==="r3")p=p.filter(x=>["2026-04","2026-05","2026-06"].includes(x.mo));if(excl)p=p.filter(x=>!x.out);return p;};
+const mos=p=>[...new Set(p.map(x=>x.mo))].sort();const ml=m=>(+m.slice(5))+"월";
+function aggMonth(ps,k){const g={};ps.forEach(p=>{(g[p.mo]=g[p.mo]||[]).push(p);});return mos(ps).map(m=>{const a=g[m];if(k==="reach")return Math.round(a.reduce((s,p)=>s+p.reach,0)/a.length);if(k==="sr")return +(a.reduce((s,p)=>s+p.save/p.reach,0)/a.length*100).toFixed(2);if(k==="link")return a.reduce((s,p)=>s+(p.link||0),0);if(k==="fo")return a.reduce((s,p)=>s+(p.fo||0),0);});}
+function bar(id,l,d,c,f,opt){if(charts[id])charts[id].destroy();const ch=new Chart(document.getElementById(id),{type:"bar",data:{labels:l,datasets:[{data:d,backgroundColor:c,borderRadius:7,maxBarThickness:54,...(opt&&opt.ds||{})}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:opt&&opt.horiz?"y":"x",layout:{padding:opt&&opt.horiz?{right:54}:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>f?f(opt&&opt.horiz?x.parsed.x:x.parsed.y):(opt&&opt.horiz?x.parsed.x:x.parsed.y).toLocaleString()}}},scales:opt&&opt.horiz?{x:{...gy,ticks:{display:false}},y:{...gx,ticks:{font:{size:11,weight:"600"},color:"#3a3a3a"}}}:{x:gx,y:{...gy,ticks:{callback:f||(v=>v.toLocaleString())}}}}});ch.$vlab=true;ch.$vfmt=f||(v=>v.toLocaleString());charts[id]=ch;}
+function line(id,l,d,f){if(charts[id])charts[id].destroy();const ch=new Chart(document.getElementById(id),{type:"line",data:{labels:l,datasets:[{data:d,borderColor:"#141414",backgroundColor:"rgba(20,20,20,.06)",fill:true,tension:.35,pointRadius:4,pointBackgroundColor:"#141414",borderWidth:2.5}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:18}},plugins:{legend:{display:false},tooltip:{callbacks:{label:x=>f(x.parsed.y)}}},scales:{x:gx,y:{...gy,ticks:{callback:f}}}}});ch.$vlab=true;ch.$vfmt=f;charts[id]=ch;}
+const kf=v=>v>=10000?(v/1000).toFixed(0)+"K":v.toLocaleString();
+function render(){
+ const ps=fil(),ms=mos(ps).map(ml);
+ const tR=ps.reduce((s,p)=>s+p.reach,0),tL=ps.reduce((s,p)=>s+(p.link||0),0),tS=ps.reduce((s,p)=>s+p.save,0),tF=ps.reduce((s,p)=>s+(p.fo||0),0);
+ const aSr=(ps.reduce((s,p)=>s+p.save/p.reach,0)/ps.length*100).toFixed(2);
+ hReach.textContent=(tR/1000).toFixed(0)+"K";hLink.textContent=tL.toLocaleString();hSave.textContent=tS.toLocaleString();hSr.textContent=aSr+"%";
+ document.getElementById("kpis").innerHTML=`
+ <div class="kpi feat"><div class="lbl">게시물</div><div class="val">${ps.length}</div><div class="note">${period==="r3"?"최근 3개월":"전체 기간"}${excl?" · 이상치 제외":""}</div></div>
+ <div class="kpi"><div class="lbl">총 도달</div><div class="val">${(tR/1000).toFixed(0)}K</div><div class="note">평균 ${Math.round(tR/ps.length).toLocaleString()}</div></div>
+ <div class="kpi"><div class="lbl">링크 클릭</div><div class="val">${tL.toLocaleString()}</div><div class="note">B2B 핵심 전환</div></div>
+ <div class="kpi"><div class="lbl">총 저장</div><div class="val">${tS.toLocaleString()}</div><div class="note">평균률 ${aSr}%</div></div>
+ <div class="kpi"><div class="lbl">신규 팔로우</div><div class="val">${tF}</div><div class="note">집계 가능분</div></div>`;
+ // spotlight
+ const byReach=[...ps].sort((a,b)=>b.reach-a.reach)[0];
+ const bySr=[...ps].sort((a,b)=>(b.save/b.reach)-(a.save/a.reach))[0];
+ const byLink=[...ps].filter(p=>p.link).sort((a,b)=>b.link-a.link)[0];
+ const mm=p=>`${+p.d.slice(5,7)}/${+p.d.slice(8)} · ${p.e}`;
+ document.getElementById("spot").innerHTML=`
+ <div class="scard"><div class="tagline">최고 도달</div><div class="big">${byReach.reach.toLocaleString()}</div><div class="nm">${byReach.n}</div><div class="meta">${mm(byReach)}</div></div>
+ <div class="scard"><div class="tagline">최고 저장률</div><div class="big">${(bySr.save/bySr.reach*100).toFixed(2)}%</div><div class="nm">${bySr.n}</div><div class="meta">${mm(bySr)} · 저장 ${bySr.save}</div></div>
+ <div class="scard"><div class="tagline">최다 링크 클릭</div><div class="big">${byLink?byLink.link.toLocaleString():"–"}</div><div class="nm">${byLink?byLink.n:"–"}</div><div class="meta">${byLink?mm(byLink):""}</div></div>`;
+ bar("ovReach",ms,aggMonth(ps,"reach"),ms.map(()=>INK),kf);line("ovSave",ms,aggMonth(ps,"sr"),v=>v+"%");
+ bar("moReach",ms,aggMonth(ps,"reach"),ms.map(()=>INK),kf);bar("moLink",ms,aggMonth(ps,"link"),ms.map(()=>INK),kf);
+ line("moSave",ms,aggMonth(ps,"sr"),v=>v+"%");bar("moFol",ms,aggMonth(ps,"fo"),ms.map(()=>INK));
+ const g={};ps.forEach(p=>{(g[p.mo]=g[p.mo]||[]).push(p);});
+ document.getElementById("moTb").innerHTML=mos(ps).map(m=>{const a=g[m],r=Math.round(a.reduce((s,p)=>s+p.reach,0)/a.length),sv=a.reduce((s,p)=>s+p.save,0),sr=+(a.reduce((x,p)=>x+p.save/p.reach,0)/a.length*100).toFixed(2),lk=a.reduce((x,p)=>x+(p.link||0),0),f=a.reduce((x,p)=>x+(p.fo||0),0),li=Math.round(a.reduce((x,p)=>x+p.like,0)/a.length);return `<tr><td class="l">${ml(m)}</td><td>${a.length}</td><td>${r.toLocaleString()}</td><td>${sv}</td><td>${sr}%</td><td>${lk.toLocaleString()}</td><td>${f}</td><td>${li}</td></tr>`;}).join("");
+ document.getElementById("moNote").textContent=excl?"블루보틀 이상치 제외 기준":"블루보틀(2/6) 이상치 포함 — 2월 평균이 과대평가될 수 있음";
+ const cl=e=>e==="광고"?INK:COLL,tc=e=>e==="광고"?"t-ad":"t-collab",nf=v=>v==null?"–":v.toLocaleString();
+ const srt=[...ps].sort((a,b)=>b.reach-a.reach);
+ bar("pfReach",srt.map(p=>p.n),srt.map(p=>p.reach),srt.map(p=>cl(p.e)),kf,{horiz:true});
+ const bd=[...ps].sort((a,b)=>b.d.localeCompare(a.d));
+ document.getElementById("pfTb").innerHTML=bd.map(p=>`<tr><td class="l">${p.n} <span class="dim">${+p.d.slice(5,7)}/${+p.d.slice(8)}</span></td><td class="l"><span class="tag ${tc(p.e)}">${p.e}</span></td><td>${nf(p.reach)}</td><td>${nf(p.save)}</td><td>${(p.save/p.reach*100).toFixed(2)}%</td><td>${nf(p.link)}</td><td>${nf(p.fo)}</td><td>${nf(p.like)}</td></tr>`).join("");
+ document.getElementById("foot").textContent="데이터: Meta 인사이트 캡처 · 구글 시트 실시간 연동 · 게시물 "+posts.length+"건(채용글 제외). 광고·콜라보 게시물의 도달은 유료/협업으로 증폭된 값입니다. 프로필 활동·링크가 비공개인 일부 콜라보 글은 해당 합계에서 빠집니다.";
+}
+document.querySelectorAll("#segPeriod button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#segPeriod button").forEach(x=>x.classList.remove("on"));b.classList.add("on");period=b.dataset.v;render();});
+document.getElementById("ckOut").onchange=e=>{excl=e.target.checked;render();};
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));document.querySelectorAll(".pane").forEach(x=>x.classList.remove("on"));t.classList.add("on");document.getElementById(t.dataset.p).classList.add("on");setTimeout(()=>{Object.values(charts).forEach(c=>c.resize());},30);});
+// ===== 구글 시트 실시간 연동 =====
+// 시트를 '파일 > 공유 > 웹에 게시 > 게시물 기록 탭 > CSV'로 게시한 뒤, 아래 따옴표 안에 그 링크를 붙여넣으세요.
+const SHEET_CSV_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vTqKWMSMOzJfI2gViwsTeYLp-bXe9Qzdlib7yV11j99-sykkPdBhcdBTreHpgDnK4LDAZxaztGTk7oL/pub?gid=952386392&single=true&output=csv";
+function parseCSV(t){const rows=[];let row=[],f="",q=false;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c;}else{if(c==='"')q=true;else if(c===','){row.push(f);f="";}else if(c==='\n'){row.push(f);rows.push(row);row=[];f="";}else if(c==='\r'){}else f+=c;}}if(f.length||row.length){row.push(f);rows.push(row);}return rows;}
+function buildFromSheet(rows){
+ const norm=h=>(h||"").replace(/\s/g,"");
+ const hi=rows.findIndex(r=>r.some(c=>norm(c)==="게시일"));if(hi<0)return null;
+ const H=rows[hi].map(norm);
+ const ix=k=>H.findIndex(h=>h.includes(k));
+ const c={d:ix("게시일"),exp:ix("노출"),typ:ix("콘텐츠"),title:ix("주제"),like:ix("좋아요"),cm:ix("댓글"),sh:ix("공유"),rp:ix("리포스트"),sv:ix("저장"),vw:ix("조회"),rc:ix("도달"),pv:ix("프로필방문"),fo:ix("팔로우"),lk:ix("외부링크")};
+ if(c.sv===c.rc){/* '저장률'와 '저장' 혼동 방지: 저장은 % 없는 첫 컬럼 */}
+ const N=v=>{v=(v||"").replace(/[^0-9]/g,"");return v===""?null:+v;};
+ const out=[];
+ for(let i=hi+1;i<rows.length;i++){const r=rows[i];const d=(r[c.d]||"").trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d))continue;
+  if(((r[c.typ]||"")+(r[c.exp]||"")).includes("채용"))continue;
+  const rc=N(r[c.rc]);if(rc==null)continue;
+  const exp=(r[c.exp]||"").trim();
+  const title=(r[c.title]||"").split("(")[0].trim();
+  out.push({d:d,mo:d.slice(0,7),e:exp.includes("콜라보")?"콜라보":"광고",t:(r[c.typ]||"").trim(),
+   like:N(r[c.like])||0,cm:N(r[c.cm])||0,sh:N(r[c.sh])||0,rp:N(r[c.rp])||0,save:N(r[c.sv])||0,
+   views:N(r[c.vw]),reach:rc,pv:N(r[c.pv]),fo:N(r[c.fo]),link:N(r[c.lk]),
+   out:d==="2026-02-06"||title.includes("블루보틀"),n:title||d});
+ }
+ return out.length?out:null;
+}
+async function init(){
+ const hsub=document.getElementById("hsub");
+ if(SHEET_CSV_URL){try{const res=await fetch(SHEET_CSV_URL,{cache:"no-store"});const txt=await res.text();const p=buildFromSheet(parseCSV(txt));
+   if(p&&p.length){posts=p;const upd=new Date().toLocaleDateString("ko-KR");hsub.textContent="@movementlab_project · 게시물 "+p.length+"건 · 구글 시트 실시간 연동 ("+upd+" 기준)";}
+  }catch(e){console.warn("시트 로드 실패, 스냅샷 사용:",e);}}
+ render();
+}
+init();
+</script></body></html>
