@@ -61,6 +61,7 @@ body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:
 .card .hn{font-size:11.5px;color:var(--muted);margin-top:3px;margin-bottom:18px;}
 .cv{position:relative;height:256px;}
 .cv.tall{height:430px;}
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:12.5px;}
 th,td{padding:11px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap;}
 th{color:var(--muted);font-weight:700;font-size:10.5px;letter-spacing:.3px;text-transform:uppercase;background:var(--soft);}
@@ -94,7 +95,7 @@ td.l,th.l{text-align:left;}tr:hover td{background:var(--soft);}
 <div class="hero"><div class="inner">
 <div class="eyebrow">Movement Lab · Instagram</div>
 <h1>콘텐츠 성과<br>대시보드</h1>
-<div class="sub" id="hsub">@movementlab_project · 게시물 24건 · 2026.02.04 – 06.22 · 스냅샷</div>
+<div class="sub" id="hsub">@movementlab_project · 게시물 27건 · 2026.02.04 – 07.13 · 스냅샷</div>
 <div class="strip">
 <div><span class="k">총 도달</span><b id="hReach">–</b></div>
 <div><span class="k">총 외부 링크 클릭</span><b id="hLink">–</b></div>
@@ -132,13 +133,13 @@ td.l,th.l{text-align:left;}tr:hover td{background:var(--soft);}
 <div class="card"><h3>월별 신규 팔로우</h3><div class="hn">계정 성장 기여</div><div class="cv"><canvas id="moFol"></canvas></div></div>
 </div>
 <div class="card full"><h3>월별 요약</h3><div class="hn" id="moNote"> </div>
-<table><thead><tr><th class="l">월</th><th>게시물</th><th>평균 도달</th><th>총 저장</th><th>평균 저장률</th><th>총 링크</th><th>총 팔로우</th><th>평균 좋아요</th></tr></thead><tbody id="moTb"></tbody></table></div>
+<div class="tscroll"><table><thead><tr><th class="l">월</th><th>게시물</th><th>평균 도달</th><th>총 저장</th><th>평균 저장률</th><th>총 링크</th><th>총 팔로우</th><th>평균 좋아요</th></tr></thead><tbody id="moTb"></tbody></table></div></div>
 </div>
 
 <div class="pane" id="pf">
 <div class="card full"><h3>게시물별 도달 순위</h3><div class="hn">진한 회색 = 광고 · 연회색 = 콜라보</div><div class="cv tall"><canvas id="pfReach"></canvas></div></div>
-<div class="card full" style="margin-top:16px"><h3>게시물 상세 (최신순)</h3><div class="hn"> </div>
-<table><thead><tr><th class="l">게시물</th><th class="l">노출</th><th>도달</th><th>저장</th><th>저장률</th><th>링크</th><th>팔로우</th><th>좋아요</th></tr></thead><tbody id="pfTb"></tbody></table></div>
+<div class="card full" style="margin-top:16px"><h3>게시물 상세 (최신순)</h3><div class="hn">전체 지표 · 표를 좌우로 스크롤하세요 · 저장률=저장÷도달 · 참여율=(좋아요+댓글+공유+저장)÷도달</div>
+<div class="tscroll"><table><thead><tr><th class="l">게시물</th><th class="l">노출</th><th class="l">유형</th><th>조회</th><th>도달</th><th>좋아요</th><th>댓글</th><th>공유</th><th>리포스트</th><th>저장</th><th>저장률</th><th>참여율</th><th>프로필방문</th><th>팔로우</th><th>외부링크</th></tr></thead><tbody id="pfTb"></tbody></table></div></div>
 </div>
 
 <div class="pane" id="rv">
@@ -183,32 +184,35 @@ td.l,th.l{text-align:left;}tr:hover td{background:var(--soft);}
 <script>
 const INK="#1d1d1d",COLL="#C2BDB2";
 const RAW=[
-["2026-02-04","광고","스토리",31,0,5,0,7,5280,3555,0,6,null,false],
-["2026-02-06","광고","프로젝트",951,5,166,5,940,294336,136058,463,191,6567,true],
-["2026-02-11","콜라보","프로젝트",99,0,12,2,29,36465,15936,52,2,null,false],
-["2026-02-16","콜라보","프로젝트",140,0,12,0,95,34126,16717,54,6,1,false],
-["2026-02-23","광고","프로젝트",246,1,31,0,130,42383,20925,90,19,28,false],
-["2026-03-02","콜라보","프로젝트",178,3,21,4,90,26898,12667,57,8,4,false],
-["2026-03-16","콜라보","프로젝트",167,0,15,2,92,28024,12641,49,14,1,false],
-["2026-03-23","광고","프로젝트",91,0,12,0,52,37358,16944,35,10,257,false],
-["2026-03-30","광고","프로젝트",151,0,24,0,134,42578,20625,87,18,37,false],
-["2026-04-03","콜라보","프로젝트",44,0,6,0,20,25472,12986,14,0,null,false],
-["2026-04-06","광고","프로젝트",116,0,12,0,43,43813,22328,38,5,21,false],
-["2026-04-13","광고","프로젝트",158,0,42,0,135,41829,20332,68,13,161,false],
-["2026-04-20","콜라보","스토리",240,2,18,0,38,33749,13677,null,null,null,false],
-["2026-04-28","콜라보","프로젝트",39,0,0,2,11,15912,6755,17,2,1,false],
-["2026-05-04","콜라보","프로젝트",60,0,15,1,45,34178,16247,35,5,2,false],
-["2026-05-11","광고","프로젝트",178,0,34,0,96,67479,32448,65,11,194,false],
-["2026-05-13","콜라보","스토리",491,0,24,2,178,39920,18163,null,null,null,false],
-["2026-05-18","광고","렌탈",77,0,8,4,76,62877,31169,33,11,1160,false],
-["2026-05-21","광고","프로젝트",76,2,19,0,67,52113,28516,18,7,335,false],
-["2026-05-25","콜라보","프로젝트",157,0,35,31,70,66775,26663,170,8,null,false],
-["2026-06-01","광고","프로젝트",87,1,8,4,52,85045,52353,48,6,509,false],
-["2026-06-08","광고","렌탈",105,0,23,4,60,58489,34174,15,8,360,false],
-["2026-06-15","콜라보","프로젝트",23,1,8,0,9,19643,8436,14,2,null,false],
-["2026-06-22","콜라보","프로젝트",67,0,12,1,20,33175,14324,28,3,5,false],
+["2026-02-04","광고","스토리형",31,0,5,0,7,5280,3555,0,6,null,false],
+["2026-02-06","광고","프로젝트형",951,5,166,5,940,294336,136058,463,191,6567,true],
+["2026-02-11","콜라보","프로젝트형",99,0,12,2,29,36465,15936,52,2,null,false],
+["2026-02-16","콜라보","프로젝트형",140,0,12,0,95,34126,16717,54,6,1,false],
+["2026-02-23","광고","프로젝트형",246,1,31,0,130,42383,20925,90,19,28,false],
+["2026-03-02","콜라보","프로젝트형",178,3,21,4,90,26898,12667,57,8,4,false],
+["2026-03-16","콜라보","프로젝트형",167,0,15,2,92,28024,12641,49,14,1,false],
+["2026-03-23","광고","프로젝트형",91,0,12,0,52,37358,16944,35,10,257,false],
+["2026-03-30","광고","프로젝트형",151,0,24,0,134,42578,20625,87,18,37,false],
+["2026-04-03","콜라보","프로젝트형",44,0,6,0,20,25472,12986,14,0,null,false],
+["2026-04-06","광고","프로젝트형",116,0,12,0,43,43813,22328,38,5,21,false],
+["2026-04-13","광고","프로젝트형",158,0,42,0,135,41829,20332,68,13,161,false],
+["2026-04-20","콜라보","스토리형",240,2,18,0,38,33749,13677,null,null,null,false],
+["2026-04-28","콜라보","프로젝트형",39,0,0,2,11,15912,6755,17,2,1,false],
+["2026-05-04","콜라보","프로젝트형",60,0,15,1,45,34178,16247,35,5,2,false],
+["2026-05-11","광고","프로젝트형",178,0,34,0,96,67479,32448,65,11,194,false],
+["2026-05-13","콜라보","스토리형",491,0,24,2,178,39920,18163,null,null,null,false],
+["2026-05-18","광고","렌탈형",77,0,8,4,76,62877,31169,33,11,1160,false],
+["2026-05-21","광고","프로젝트형",76,2,19,0,67,52113,28516,18,7,335,false],
+["2026-05-25","콜라보","프로젝트형",157,0,35,31,70,66775,26663,170,8,null,false],
+["2026-06-01","광고","프로젝트형",87,1,8,4,52,85045,52353,48,6,509,false],
+["2026-06-08","광고","렌탈형",105,0,23,4,60,58489,34174,15,8,360,false],
+["2026-06-15","콜라보","프로젝트형",23,1,8,0,9,19643,8436,14,2,null,false],
+["2026-06-22","콜라보","프로젝트형",67,0,12,1,20,33235,14341,29,3,5,false],
+["2026-06-29","광고","프로젝트형",70,0,7,0,37,38832,20417,36,5,366,false],
+["2026-07-06","콜라보","프로젝트형",59,0,15,0,24,32181,11580,32,1,12,false],
+["2026-07-13","콜라보","프로젝트형",92,0,33,2,76,40763,19686,158,6,10,false],
 ];
-const T={"2026-02-04":"브랜드필름(릴스)","2026-02-06":"블루보틀 의자 제작기","2026-02-11":"VOCO 명동","2026-02-16":"한옥에세이 가회","2026-02-23":"WGNB SHLTR 속초","2026-03-02":"틸트E iF 어워드","2026-03-16":"b.Grid iF 어워드","2026-03-23":"들꽃숲 카페","2026-03-30":"본지르르 서촌","2026-04-03":"ART OnO 2026","2026-04-06":"LG 스마트코티지","2026-04-13":"너와의원","2026-04-20":"비트윈 THE MAKERS","2026-04-28":"SpaceCup 제주","2026-05-04":"올리브영 강남","2026-05-11":"성수율뮤직","2026-05-13":"WGNB 백종환 인터뷰","2026-05-18":"서초 e편한세상(렌탈)","2026-05-21":"머세데스 스튜디오","2026-05-25":"마말리안×국립현대","2026-06-01":"게임듀오 오피스","2026-06-08":"미리내집","2026-06-15":"KB증권","2026-06-22":"남서울 미술관(SOFA)"};
+const T={"2026-02-04":"[릴스] 무브먼트랩 Project Team 브랜드 필름","2026-02-06":"블루보틀이 선택한 의자, 그 제작 기록","2026-02-11":"명동 VOCO 호텔 로비","2026-02-16":"한옥에세이 가회","2026-02-23":"WGNB SHLTR 속초","2026-03-02":"틸트 E 라운지 iF 디자인 어워드 본상","2026-03-16":"b.Grid iF 디자인 어워드","2026-03-23":"들꽃숲 카페","2026-03-30":"본지르르 서촌","2026-04-03":"ART OnO 2026 VIP 라운지","2026-04-06":"LG 스마트코티지 죽산모락","2026-04-13":"너와의원","2026-04-20":"비트윈스페이스 THE MAKERS","2026-04-28":"SpaceCup 9.81PARK 제주","2026-05-04":"올리브영 강남 센트럴타운","2026-05-11":"성수율뮤직","2026-05-13":"THE MAKERS — WGNB 백종환 소장","2026-05-18":"서초 e편한세상 1차 48py","2026-05-21":"Mercedes-Benz Studio Seoul Lounge","2026-05-25":"마말리안 다이빙 리플렉스 × 국립현대미술관","2026-06-01":"게임듀오 오피스","2026-06-08":"서울시 미리내집","2026-06-15":"KB증권 스마트오피스","2026-06-22":"남서울 미술관","2026-06-29":"이도다완","2026-07-06":"전시는 작은 테이블 한 점에서 시작됐습니다","2026-07-13":"스위트 룸의 격은 가구의 톤이 정합니다"};
 let posts=RAW.map(r=>({d:r[0],mo:r[0].slice(0,7),e:r[1],t:r[2],like:r[3],cm:r[4],sh:r[5],rp:r[6],save:r[7],views:r[8],reach:r[9],pv:r[10],fo:r[11],link:r[12],out:r[13],n:T[r[0]]}));
 let period="all",excl=false;
 Chart.defaults.font.family="Pretendard";Chart.defaults.font.size=11;Chart.defaults.color="#969089";
@@ -251,7 +255,7 @@ function render(){
  const srt=[...ps].sort((a,b)=>b.reach-a.reach);
  bar("pfReach",srt.map(p=>p.n),srt.map(p=>p.reach),srt.map(p=>cl(p.e)),kf,{horiz:true});
  const bd=[...ps].sort((a,b)=>b.d.localeCompare(a.d));
- document.getElementById("pfTb").innerHTML=bd.map(p=>`<tr><td class="l">${p.n} <span class="dim">${+p.d.slice(5,7)}/${+p.d.slice(8)}</span></td><td class="l"><span class="tag ${tc(p.e)}">${p.e}</span></td><td>${nf(p.reach)}</td><td>${nf(p.save)}</td><td>${(p.save/p.reach*100).toFixed(2)}%</td><td>${nf(p.link)}</td><td>${nf(p.fo)}</td><td>${nf(p.like)}</td></tr>`).join("");
+ document.getElementById("pfTb").innerHTML=bd.map(p=>{const er=(((p.like||0)+(p.cm||0)+(p.sh||0)+(p.save||0))/p.reach*100).toFixed(2);return `<tr><td class="l">${p.n} <span class="dim">${+p.d.slice(5,7)}/${+p.d.slice(8)}</span></td><td class="l"><span class="tag ${tc(p.e)}">${p.e}</span></td><td class="l">${p.t||"–"}</td><td>${nf(p.views)}</td><td>${nf(p.reach)}</td><td>${nf(p.like)}</td><td>${nf(p.cm)}</td><td>${nf(p.sh)}</td><td>${nf(p.rp)}</td><td>${nf(p.save)}</td><td>${(p.save/p.reach*100).toFixed(2)}%</td><td>${er}%</td><td>${nf(p.pv)}</td><td>${nf(p.fo)}</td><td>${nf(p.link)}</td></tr>`;}).join("");
  document.getElementById("foot").textContent="데이터: Meta 인사이트 캡처 · 구글 시트 실시간 연동 · 게시물 "+posts.length+"건(채용글 제외). 광고·콜라보 게시물의 도달은 유료/협업으로 증폭된 값입니다. 프로필 활동·링크가 비공개인 일부 콜라보 글은 해당 합계에서 빠집니다.";
 }
 document.querySelectorAll("#segPeriod button").forEach(b=>b.onclick=()=>{document.querySelectorAll("#segPeriod button").forEach(x=>x.classList.remove("on"));b.classList.add("on");period=b.dataset.v;render();});
